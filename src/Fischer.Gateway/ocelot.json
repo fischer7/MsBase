@@ -1,0 +1,42 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5001"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/v1/Authentication/auth",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/authentication/auth/",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "Authentication"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "Authentication",
+      "Config": [
+        {
+          "Name": "Authentication",
+          "Version": "v1",
+          "Url": "https://localhost:5011/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Audit",
+      "Config": [
+        {
+          "Name": "Audit",
+          "Version": "v1",
+          "Url": "https://localhost:5021/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}
