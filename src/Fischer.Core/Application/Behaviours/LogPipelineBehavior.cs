@@ -36,7 +36,7 @@ public class LogPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
             HideData.HideSensitiveData(tempResult);
             _logger.LogInformation("Out of the Handler {TipoRequest} --> {@Result}", typeof(TResponse).Name, tempResult);
         }
-        else if (result.IsSuccess)
+        else if (result?.IsSuccess ?? false)
             _logger.LogInformation("Out of the Handler {TipoRequest} --> {@Result}", typeof(TResponse).Name, result);
         else
             _logger.LogInformation("Fluent Fail at {RequestType}", typeof(TResponse));
