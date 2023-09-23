@@ -23,12 +23,27 @@ public abstract class ApiController : ControllerBase
                         "Validation Error", StatusCodes.Status400BadRequest,
                         result.Error,
                         validationResult.Errors)),
+            IExceptionResult exceptionResult
+                  =>
+                  BadRequest(CreateExceptionDetails("Exception",
+                                 StatusCodes.Status500InternalServerError,
+                                 exceptionResult)),
+
             _ =>
                 BadRequest(
                     CreateProblemDetails(
                         "Bad Request",
                         StatusCodes.Status400BadRequest,
-                        result?.Error ?? ErrorConstants.NullValue))
+            result?.Error ?? ErrorConstants.NullValue))
+        };
+
+    private ProblemDetails? CreateExceptionDetails(string title, int status, IExceptionResult exceptionResult)
+        => new()
+        {
+            Title = title,
+            Type = nameof(ExceptionResult),
+            Detail = string.Join(" ", exceptionResult.Errors),
+            Status = status
         };
 
     private static ProblemDetails CreateProblemDetails(

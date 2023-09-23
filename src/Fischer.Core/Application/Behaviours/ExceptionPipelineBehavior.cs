@@ -25,9 +25,24 @@ public class ExceptionPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<
         }
         catch (Exception ex)
         {
-            _logger.LogError("Exception captured, {ex}", ex);
-            return (ExceptionResult.WithErrors(new List<Error>()
-                                { new Error("Exception", ex.Message) }) as TResponse)!;
+            _logger.LogError(ex.Message);
+            var exceptionMessage = ex.Message
+                    + (ex.InnerException is not null ? " - InnerException: " + ex.InnerException?.Message : string.Empty);
+
+            return CreateExceptionResult<TResponse>(new Error("Exception", exceptionMessage));
         }
+
+    }
+    private static TResult CreateExceptionResult<TResult>(Error error) where TResult : Result
+    {
+        var errors = new List<Error> { error };
+        object exceptionResult =
+            typeof(ExceptionResult<>)
+            .GetGenericTypeDefinition()
+            .MakeGenericType(typeof(TResult).GenericTypeArguments[0])
+            .GetMethod(nameof(ExceptionResult.WithErrors))!
+            .Invoke(null, new object?[] { errors })!;
+
+        return (TResult)exceptionResult;
     }
 }
